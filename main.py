@@ -14,10 +14,6 @@ with open('model.pkl', 'rb') as pickle_in:
 with open('scaler.pkl', 'rb') as pickle_in:
     scaler = pickle.load(pickle_in)
 
-@app.get('/')
-def home():
-    return {'message': 'Hello!!'}
-
 @app.post('/predict')
 def predict(data: info_data):
     age = data.age
@@ -51,9 +47,9 @@ def predict(data: info_data):
     ]
 
     # Make prediction using the model
-    prediction = model.predict([prediction_input])
+    prediction = model.predict_proba([prediction_input])
     
-    return {'prediction': str(prediction[0])}
+    return {'prob of eligible': str(prediction[0][0]), 'prob of not eligible': str(prediction[0][1])}
 
 if __name__ == '__main__':
     uvicorn.run(app)
